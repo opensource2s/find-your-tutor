@@ -1,0 +1,14 @@
+const express=require("express");
+const checkJwt=require("../config/auth");
+const service=require("../services/chatService");
+const router=express.Router(); router.use(checkJwt);
+const fail=(res,e)=>res.status(e.status||500).json({success:false,message:e.message||"Something went wrong"});
+const principal=async(req)=>{const preferred=["student","tutor"].includes(req.query.role)?req.query.role:null;const p=await service.resolvePrincipal(req.auth.payload.sub,preferred);if(!p)throw Object.assign(new Error("No student or tutor profile is linked to this account"),{status:404});return p;};
+router.get("/conversations",async(req,res)=>{try{const p=await principal(req);res.json({success:true,principal:p,conversations:await service.getConversations(p,req.query.archived==="true")});}catch(e){fail(res,e);}});
+router.post("/conversations/:tutorId",async(req,res)=>{try{const p=await principal(req);if(p.type!=="student")return res.status(403).json({success:false,message:"Only students start tutor conversations"});res.status(201).json({success:true,conversation:await service.ensureConversationForStudent(p.id,req.params.tutorId)});}catch(e){fail(res,e);}});
+router.patch("/conversations/:id",async(req,res)=>{try{const p=await principal(req);res.json({success:true,conversation:await service.setConversationPreference(p,req.params.id,req.body)});}catch(e){fail(res,e);}});
+router.get("/conversations/:id/messages",async(req,res)=>{try{const p=await principal(req);res.json({success:true,messages:await service.getMessages(p,req.params.id)});}catch(e){fail(res,e);}});
+router.post("/conversations/:id/messages",async(req,res)=>{try{const p=await principal(req);res.status(201).json({success:true,message:await service.sendMessage(p,req.params.id,req.body.body,req.body.reply_to_message_id)});}catch(e){fail(res,e);}});
+router.patch("/conversations/:id/messages/:messageId",async(req,res)=>{try{const p=await principal(req);res.json({success:true,message:await service.editMessage(p,req.params.id,req.params.messageId,req.body.body)});}catch(e){fail(res,e);}});
+router.delete("/conversations/:id/messages/:messageId",async(req,res)=>{try{const p=await principal(req);res.json({success:true,message:await service.deleteMessage(p,req.params.id,req.params.messageId)});}catch(e){fail(res,e);}});
+module.exports=router;

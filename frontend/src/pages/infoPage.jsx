@@ -1,0 +1,21 @@
+import Header from "../components/header";
+import { Link } from "react-router-dom";
+import Footer from "../components/footer";
+import "../styles/app.css";
+
+const content = {
+  about: { eyebrow:"ABOUT TUTORLY", title:"Learning works better when the tutor fits the student.", body:["Tutorly is a tutor discovery and communication marketplace built around subject fit, availability, language, experience and trust.","Students can discover tutors, review detailed profiles, send a connection request and start a direct conversation. Tutors control their profile, requests, students, availability and messages from a dedicated portal."] },
+  "how-it-works": { eyebrow:"HOW IT WORKS", title:"From search to a real tutor connection.", body:["1. Create a student account and search by subject, language, country, experience, price or availability.","2. Open a tutor profile, message the tutor directly and optionally send a formal connection request.","3. The tutor reviews the request, replies in chat and accepts or declines the connection.","4. Accepted students can book sessions and later leave reviews after learning experiences."] },
+  faq: { eyebrow:"HELP CENTER", title:"Frequently asked questions", body:["Can I message before a tutor accepts me? Yes. Tutorly supports direct student inquiries so you can ask about teaching style, availability and goals first.","What does a blue double tick mean? The message has been read. One tick means sent; two grey ticks mean delivered.","Are tutor documents mandatory? Not during development testing. Verification fields are optional and can be reviewed later.","How many students can one tutor accept? The project currently enforces a maximum of 50 active connected students per tutor."] },
+  rules: { eyebrow:"COMMUNITY RULES", title:"Keep Tutorly useful, respectful and safe.", body:["Use chat for genuine tutoring questions, learning plans and session coordination.","Do not spam tutors or students, impersonate another person, upload misleading credentials, or misuse contact information.","Reviews should describe genuine experiences and should not contain harassment, threats or private information."] },
+  safety: { eyebrow:"TRUST & SAFETY", title:"Build trust before you book.", body:["Tutor profiles can include education, certifications, experience and optional identity or qualification proof fields.","Students should review a tutor's profile, ratings and communication before booking. Tutor verification can be expanded into a dedicated admin review workflow later."] },
+  terms: { eyebrow:"LEGAL", title:"Terms of use", body:["Tutorly is currently a portfolio/demo application. Accounts and interactions should be used for testing and demonstration unless production policies are added.","Users are responsible for accurate profile information and appropriate use of messaging, bookings and reviews."] },
+  privacy: { eyebrow:"PRIVACY", title:"Privacy overview", body:["Authentication passwords are handled by Auth0 and are not stored in Tutorly PostgreSQL tables.","Tutorly stores application profile data, connection records, conversations, messages, bookings, favorites, notifications and reviews needed to provide the marketplace experience."] },
+  copyright: { eyebrow:"COPYRIGHT", title:"Copyright & content", body:["Tutorly branding, interface copy and project-specific application code are intended for this project. Users should only upload profile images, documents and other content they have permission to use."] },
+  contact: { eyebrow:"CONTACT", title:"Need help with Tutorly?", body:["For this portfolio build, support can be represented through the in-app help center. A production version could add ticketing, email support and moderation tooling."] }
+};
+
+export default function InfoPage({ page }) {
+  const item=content[page]||content.about;
+  return <><Header/><main className="dashboard-wrap"><section className="dash-hero"><div><span className="eyebrow">{item.eyebrow}</span><h1>{item.title}</h1><p>Tutorly marketplace information and product guidance.</p></div></section><section className="panel info-page">{item.body.map((p,i)=><p key={i}>{p}</p>)}<div className="action-row"><Link className="primary small" to="/home">Find tutors</Link><Link className="secondary small" to="/faq">FAQ</Link></div></section></main><Footer/></>;
+}
